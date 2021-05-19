@@ -9,7 +9,7 @@ namespace Delpin_Booking.Models
     public class Customer
     {
         [Key]
-        public int Customer_id { get; set; }
+        public int CustomerId { get; set; }
 
         public string Name { get; set; }
         public int PhoneNumber { get; set; }

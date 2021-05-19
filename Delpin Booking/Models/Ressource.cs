@@ -10,13 +10,11 @@ namespace Delpin_Booking.Models
     public class Ressource
     {
         [Key]
-        public int Ressource_id { get; set; }
+        public int RessourceId { get; set; }
 
         [ForeignKey("Department")]
+        public int DepartmentId { get; set; }
         public Department Department { get; set; }
-        public int Department_id { get; set; }
-       
-       
         public string Name { get; set; }
         public string Type { get; set; }
         public string Location { get; set; }

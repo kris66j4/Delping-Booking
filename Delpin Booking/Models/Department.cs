@@ -9,7 +9,7 @@ namespace Delpin_Booking.Models
     public class Department
     {
         [Key]
-        public int Department_id { get; set; }
+        public int DepartmentId { get; set; }
         public string City { get; set; }
         public int PostCode { get; set; }
     }

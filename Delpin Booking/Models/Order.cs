@@ -10,15 +10,15 @@ namespace Delpin_Booking.Models
     public class Order
     {
         [Key]
-        public int Order_id { get; set; }
+        public int OrderId { get; set; }
 
         [ForeignKey("Customer")]
+        public int CustomerId { get; set; }
         public Customer Customer { get; set; }
-        public int Customer_id { get; set; }
         [ForeignKey("Ressource")]
+        public int RessourceId { get; set; }
         public Ressource Ressource { get; set; }
-        public int Ressource_id { get; set; }
-        public DateTime date { get; set; }
+        public DateTime Date { get; set; }
         public decimal Price { get; set; }
     }
 }

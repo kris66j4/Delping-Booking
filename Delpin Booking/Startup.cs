@@ -29,7 +29,12 @@ namespace Delpin_Booking
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DelpingBookingContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services.AddDbContext<DelpinBookingContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DelpingBookingContext")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
