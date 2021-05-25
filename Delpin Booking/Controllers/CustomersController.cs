@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Delpin_Booking.Controllers
@@ -77,21 +78,53 @@ namespace Delpin_Booking.Controllers
             return View();
         }
 
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CustomerId,Name,PhoneNumber")] Customer customer)
         {
-            if (ModelState.IsValid)
+            using (var client = new HttpClient())
             {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var postJob = client.PostAsJsonAsync<Customer>("Customers", customer);
+                postJob.Wait();
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
+                }
+                return View(customer);
             }
-            return View(customer);
         }
+
+        //if (ModelState.IsValid)
+        //{
+        //    _context.Add(customer);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+        //return View(customer);
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("CustomerId,Name,PhoneNumber")] Customer customer)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(customer);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(customer);
+        //}
 
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -112,6 +145,10 @@ namespace Delpin_Booking.Controllers
         // POST: Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+        
+       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Name,PhoneNumber")] Customer customer)
@@ -179,3 +216,4 @@ namespace Delpin_Booking.Controllers
         }
     }
 }
+

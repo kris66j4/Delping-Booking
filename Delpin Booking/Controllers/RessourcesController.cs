@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Delpin_Booking.Data;
 using Delpin_Booking.Models;
+using System.Net.Http;
 
 namespace Delpin_Booking.Controllers
 {
@@ -48,8 +49,31 @@ namespace Delpin_Booking.Controllers
         // GET: Ressources/Create
         public IActionResult Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId");
-            return View();
+            IEnumerable<Department> department = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync("Departments");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<IList<Department>>();
+                    readJob.Wait();
+                    department = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //department = Enumerable.Empty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId");
+                return View();
+                //return View(customer);
+
+            }
         }
 
         // POST: Ressources/Create
@@ -59,14 +83,31 @@ namespace Delpin_Booking.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("RessourceId,DepartmentId,Name,Type,Location,Price")] Ressource ressource)
         {
-            if (ModelState.IsValid)
+            using (var client = new HttpClient())
             {
-                _context.Add(ressource);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var postJob = client.PostAsJsonAsync<Ressource>("Ressources", ressource);
+                postJob.Wait();
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
+                }
+                return View(ressource);
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
-            return View(ressource);
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(ressource);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+            //return View(ressource);
         }
 
         // GET: Ressources/Edit/5
