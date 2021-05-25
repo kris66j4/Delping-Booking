@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Delpin_Booking.Data;
+using Delpin_Booking.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Delpin_Booking.Data;
-using Delpin_Booking.Models;
 
 namespace Delpin_Booking.Controllers
 {
@@ -19,11 +19,39 @@ namespace Delpin_Booking.Controllers
             _context = context;
         }
 
-        // GET: Customers
-        public async Task<IActionResult> Index()
+        //GET: Customers
+        public ActionResult Index()
         {
-            return View(await _context.Customers.ToListAsync());
+            IEnumerable<Customer> customer = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync("Customers");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<IList<Customer>>();
+                    readJob.Wait();
+                    customer = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    customer = Enumerable.Empty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(customer);
+
+            }
         }
+
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Customers.ToListAsync());
+        //}
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Delpin_Booking.Data;
 using Delpin_Booking.Models;
+using System.Net.Http;
 
 namespace Delpin_Booking.Controllers
 {
@@ -20,11 +21,39 @@ namespace Delpin_Booking.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-            var delpinBookingContext = _context.Orders.Include(o => o.Customer).Include(o => o.Ressource);
-            return View(await delpinBookingContext.ToListAsync());
+            IEnumerable<Order> order = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync("Orders");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<IList<Order>>();
+                    readJob.Wait();
+                    order = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    order = Enumerable.Empty<Order>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(order);
+
+            }
         }
+
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    var delpinBookingContext = _context.Orders.Include(o => o.Customer).Include(o => o.Ressource);
+        //    return View(await delpinBookingContext.ToListAsync());
+        //}
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
