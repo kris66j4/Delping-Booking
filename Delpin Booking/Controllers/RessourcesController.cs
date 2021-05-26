@@ -81,7 +81,7 @@ namespace Delpin_Booking.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RessourceId,DepartmentId,Name,Type,Location,Price")] Ressource ressource)
+        public async Task<IActionResult> Create([Bind("RessourceId,DepartmentId,Name,Link,Type,Location,Price")] Ressource ressource)
         {
             using (var client = new HttpClient())
             {
@@ -132,35 +132,53 @@ namespace Delpin_Booking.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RessourceId,DepartmentId,Name,Type,Location,Price")] Ressource ressource)
+        public async Task<IActionResult> Edit(int id, [Bind("RessourceId,DepartmentId,Name,Link,Type,Location,Price")] Ressource ressource)
         {
             if (id != ressource.RessourceId)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            using (var client = new HttpClient())
             {
-                try
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var postJob = client.PutAsJsonAsync<Ressource>($"Ressources/{ressource.RessourceId}", ressource);
+                postJob.Wait();
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
                 {
-                    _context.Update(ressource);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+
+                else
                 {
-                    if (!RessourceExists(ressource.RessourceId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
                 }
-                return RedirectToAction(nameof(Index));
+                ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+                return View(ressource);
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
-            return View(ressource);
+
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        _context.Update(ressource);
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!RessourceExists(ressource.RessourceId))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+            //return View(ressource);
         }
 
         // GET: Ressources/Delete/5

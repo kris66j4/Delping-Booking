@@ -19,5 +19,7 @@ namespace DelpinWebApi.Models
         public string Type { get; set; }
         public string Location { get; set; }
         public decimal Price { get; set; }
+        public string Link { get; set; }
+
     }
 }
