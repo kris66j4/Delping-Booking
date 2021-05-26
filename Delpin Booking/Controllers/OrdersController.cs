@@ -130,26 +130,21 @@ namespace Delpin_Booking.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            using (var client = new HttpClient())
             {
-                try
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var postJob = client.PutAsJsonAsync<Order>($"Orders/{order.OrderId}", order);
+                postJob.Wait();
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+
+                else
                 {
-                    if (!OrderExists(order.OrderId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
             ViewData["RessourceId"] = new SelectList(_context.Ressources, "RessourceId", "RessourceId", order.RessourceId);

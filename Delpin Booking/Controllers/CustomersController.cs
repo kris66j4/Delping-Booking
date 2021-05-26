@@ -158,27 +158,23 @@ namespace Delpin_Booking.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            using (var client = new HttpClient())
             {
-                try
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var postJob = client.PutAsJsonAsync<Customer>($"Customers/{customer.CustomerId}", customer);
+                postJob.Wait();
+                var postResult = postJob.Result;
+                if (postResult.IsSuccessStatusCode)
                 {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+
+                else
                 {
-                    if (!CustomerExists(customer.CustomerId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
                 }
-                return RedirectToAction(nameof(Index));
+                return View(customer);
             }
-            return View(customer);
         }
 
         // GET: Customers/Delete/5
