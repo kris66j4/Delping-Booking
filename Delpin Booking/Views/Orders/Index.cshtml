@@ -12,54 +12,66 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RessourceId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingStart)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
-        </tr>
+            @if (User.Identity.Name == "admin@mail.com")
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderId)
+                </th>
+            }
+                <th>
+                    @Html.DisplayNameFor(model => model.CustomerId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RessourceId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BookingStart)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BookingEnd)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th></th>
+            </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RessourceId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingStart)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingEnd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-            </td>
-        </tr>
+            @if (User.Identity.Name == "admin@mail.com")
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderId)
+                </td>
+            }
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RessourceId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingEnd)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                </td>
+            </tr>
 }
     </tbody>
 </table>

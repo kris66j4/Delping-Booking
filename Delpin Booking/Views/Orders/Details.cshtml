@@ -10,31 +10,52 @@
     <h4>Order</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CustomerId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ressource)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ressource.RessourceId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-    </dl>
+        @if (User.Identity.Name == "admin@mail.com")
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.OrderId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.OrderId)
+            </dd>
+        }
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CustomerId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CustomerId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.RessourceId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.RessourceId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Date)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Date)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BookingStart)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BookingStart)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BookingEnd)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.BookingEnd)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+        </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.OrderId">Edit</a> |
