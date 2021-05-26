@@ -1,7 +1,5 @@
-﻿using Delpin_Booking.Data;
-using Delpin_Booking.Models;
+﻿using Delpin_Booking.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +11,6 @@ namespace Delpin_Booking.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly DelpinBookingContext _context;
-
-        public CustomersController(DelpinBookingContext context)
-        {
-            _context = context;
-        }
-
         //GET: Customers
         public ActionResult Index()
         {
@@ -44,32 +35,38 @@ namespace Delpin_Booking.Controllers
                     ModelState.AddModelError(string.Empty, "Server fejl rip.");
                 }
                 return View(customer);
-
             }
         }
-
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Customers.ToListAsync());
-        //}
-
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
-
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
-            if (customer == null)
+            Customer customer = null;
+            using (var client = new HttpClient())
             {
-                return NotFound();
-            }
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Customers/{id}");
+                responseTask.Wait();
 
-            return View(customer);
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Customer>();
+                    readJob.Wait();
+                    customer = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(customer);
+            }
         }
 
         // GET: Customers/Create
@@ -78,8 +75,7 @@ namespace Delpin_Booking.Controllers
             return View();
         }
 
-       
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CustomerId,Name,PhoneNumber")] Customer customer)
@@ -103,28 +99,6 @@ namespace Delpin_Booking.Controllers
             }
         }
 
-        //if (ModelState.IsValid)
-        //{
-        //    _context.Add(customer);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-        //return View(customer);
-
-
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("CustomerId,Name,PhoneNumber")] Customer customer)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(customer);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(customer);
-        //}
 
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -133,22 +107,34 @@ namespace Delpin_Booking.Controllers
             {
                 return NotFound();
             }
-
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            Customer customer = null;
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Customers/{id}");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Customer>();
+                    readJob.Wait();
+                    customer = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(customer);
             }
-            return View(customer);
+
         }
 
         // POST: Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
-        
-       
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CustomerId,Name,PhoneNumber")] Customer customer)
@@ -184,15 +170,31 @@ namespace Delpin_Booking.Controllers
             {
                 return NotFound();
             }
-
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
-            if (customer == null)
+            Customer customer = null;
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Customers/{id}");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Customer>();
+                    readJob.Wait();
+                    customer = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(customer);
+                
             }
 
-            return View(customer);
+
         }
 
         // POST: Customers/Delete/5
@@ -200,16 +202,38 @@ namespace Delpin_Booking.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            Customer customer = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.DeleteAsync($"Customers/{id}");
+                responseTask.Wait();
 
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.CustomerId == id);
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Customer>();
+                    readJob.Wait();
+                    customer = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+               
+                return RedirectToAction(nameof(Index));
+            }
+
         }
+        //Denne metode blev brugt i forbindelse med original EF MVC genereret kode. 
+        //Den blev muligvis brugt til at checke om customer eksisterer.
+
+        //private bool CustomerExists(int id)
+        //{
+        //    return _context.Customers.Any(e => e.CustomerId == id);
+        //}
     }
 }
 

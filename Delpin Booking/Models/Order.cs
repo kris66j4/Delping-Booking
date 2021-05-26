@@ -18,7 +18,14 @@ namespace Delpin_Booking.Models
         [ForeignKey("Ressource")]
         public int RessourceId { get; set; }
         public Ressource Ressource { get; set; }
+        [Column(TypeName = "Date")]
         public DateTime Date { get; set; }
+        [Column(TypeName ="Date")]
+        public DateTime BookingStart { get; set; }
+        [Column(TypeName = "Date")]
+        public DateTime BookingEnd { get; set; }
         public decimal Price { get; set; }
+
+        
     }
 }

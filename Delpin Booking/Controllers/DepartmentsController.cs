@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Delpin_Booking.Data;
 using Delpin_Booking.Models;
+using System.Net.Http;
 
 namespace Delpin_Booking.Controllers
 {
@@ -22,7 +23,29 @@ namespace Delpin_Booking.Controllers
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            IEnumerable<Department> department = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync("Departments");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<IList<Department>>();
+                    readJob.Wait();
+                    department = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    department = Enumerable.Empty<Department>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(department);
+            }
+            //return View(await _context.Departments.ToListAsync());
         }
 
         // GET: Departments/Details/5

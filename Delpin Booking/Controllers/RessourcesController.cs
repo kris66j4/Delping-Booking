@@ -100,14 +100,7 @@ namespace Delpin_Booking.Controllers
                 }
                 return View(ressource);
             }
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(ressource);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
-            //return View(ressource);
+            
         }
 
         // GET: Ressources/Edit/5
