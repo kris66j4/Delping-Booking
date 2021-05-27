@@ -23,8 +23,28 @@ namespace Delpin_Booking.Controllers
         // GET: Ressources
         public async Task<IActionResult> Index()
         {
-            var delpinBookingContext = _context.Ressources.Include(r => r.Department);
-            return View(await delpinBookingContext.ToListAsync());
+            IEnumerable<Ressource> ressource = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync("Ressources");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<IList<Ressource>>();
+                    readJob.Wait();
+                    ressource = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    ressource = Enumerable.Empty<Ressource>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+            }   return View(ressource);
+            
         }
 
         // GET: Ressources/Details/5
@@ -34,16 +54,28 @@ namespace Delpin_Booking.Controllers
             {
                 return NotFound();
             }
-
-            var ressource = await _context.Ressources
-                .Include(r => r.Department)
-                .FirstOrDefaultAsync(m => m.RessourceId == id);
-            if (ressource == null)
+            Ressource ressource = null;
+            using (var client = new HttpClient())
             {
-                return NotFound();
-            }
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Ressources/{id}");
+                responseTask.Wait();
 
-            return View(ressource);
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Ressource>();
+                    readJob.Wait();
+                    ressource = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(ressource);
+            }
         }
 
         // GET: Ressources/Create
@@ -66,13 +98,11 @@ namespace Delpin_Booking.Controllers
                 else
                 {
                     //Return the error code here
-                    //department = Enumerable.Empty<Customer>();
+                    
                     ModelState.AddModelError(string.Empty, "Server fejl rip.");
                 }
                 ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId");
                 return View();
-                //return View(customer);
-
             }
         }
 
