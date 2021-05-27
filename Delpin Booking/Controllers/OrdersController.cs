@@ -310,7 +310,61 @@ namespace Delpin_Booking.Controllers
             }
 
         }
+        [ActionName("Book")]
+        [Route("/Orders/Book")]
+        // GET: Orders/Book/5
+        public async Task<IActionResult> Book(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Ressource ressource = null;
+            IEnumerable<Department> department = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Ressources/{id}");
+                var responseTask2 = client.GetAsync($"Departments");
 
+                responseTask2.Wait();
+
+                var result = responseTask.Result;
+                var result2 = responseTask2.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Ressource>();
+                    readJob.Wait();
+                    ressource = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+
+                    ModelState.AddModelError(string.Empty, "Responsetask 1 fejl rip.");
+                }
+                if (result2.IsSuccessStatusCode)
+                {
+                    var readJob2 = result2.Content.ReadAsAsync<IList<Department>>();
+                    readJob2.Wait();
+                    department = readJob2.Result;
+                }
+                else
+                {
+                    //Return the error code here
+
+                    ModelState.AddModelError(string.Empty, "Responsetask 2 fejl rip.");
+                }
+
+                //ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+                //ViewData["RessourceId"] = new SelectList(ressource, "RessourceId", "RessourceId");
+                //ViewData["test"] = ressource.RessourceId.ToString();
+                //ViewBag.RessourceId = ressource.RessourceId.ToString();
+                return View();
+            }
+
+        }
         //private bool OrderExists(int id)
         //{
         //    return _context.Orders.Any(e => e.OrderId == id);

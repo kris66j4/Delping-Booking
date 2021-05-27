@@ -13,12 +13,8 @@ namespace Delpin_Booking.Controllers
 {
     public class RessourcesController : Controller
     {
-        private readonly DelpinBookingContext _context;
-
-        public RessourcesController(DelpinBookingContext context)
-        {
-            _context = context;
-        }
+        
+        private IEnumerable<Department> department = null;
 
         // GET: Ressources
         public async Task<IActionResult> Index()
@@ -71,7 +67,7 @@ namespace Delpin_Booking.Controllers
                 else
                 {
                     //Return the error code here
-                    //customer = EnumerableEmpty<Customer>();
+                    
                     ModelState.AddModelError(string.Empty, "Server fejl rip.");
                 }
                 return View(ressource);
@@ -140,14 +136,49 @@ namespace Delpin_Booking.Controllers
             {
                 return NotFound();
             }
-
-            var ressource = await _context.Ressources.FindAsync(id);
-            if (ressource == null)
+            Ressource ressource = null;
+            
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Ressources/{id}");
+                var responseTask2 = client.GetAsync($"Departments");
+                
+                responseTask2.Wait();
+
+                var result = responseTask.Result;
+                var result2 = responseTask2.Result;
+               
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Ressource>();
+                    readJob.Wait();
+                    ressource = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+
+                    ModelState.AddModelError(string.Empty, "Responsetask 1 fejl rip.");
+                }
+                if (result2.IsSuccessStatusCode)
+                {
+                    var readJob2 = result2.Content.ReadAsAsync<IList<Department>>();
+                    readJob2.Wait();
+                    department = readJob2.Result;
+                }
+                else
+                {
+                    //Return the error code here
+
+                    ModelState.AddModelError(string.Empty, "Responsetask 2 fejl rip.");
+                }
+               
+                ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+                
+                return View(ressource);
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
-            return View(ressource);
+            
         }
 
         // POST: Ressources/Edit/5
@@ -176,32 +207,10 @@ namespace Delpin_Booking.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
                 }
-                ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+                ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
                 return View(ressource);
             }
 
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(ressource);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!RessourceExists(ressource.RessourceId))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "DepartmentId", ressource.DepartmentId);
-            //return View(ressource);
         }
 
         // GET: Ressources/Delete/5
@@ -211,16 +220,30 @@ namespace Delpin_Booking.Controllers
             {
                 return NotFound();
             }
-
-            var ressource = await _context.Ressources
-                .Include(r => r.Department)
-                .FirstOrDefaultAsync(m => m.RessourceId == id);
-            if (ressource == null)
+            Ressource ressource = null;
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.GetAsync($"Ressources/{id}");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Ressource>();
+                    readJob.Wait();
+                    ressource = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+                return View(ressource);
+
             }
 
-            return View(ressource);
         }
 
         // POST: Ressources/Delete/5
@@ -228,15 +251,86 @@ namespace Delpin_Booking.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ressource = await _context.Ressources.FindAsync(id);
-            _context.Ressources.Remove(ressource);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            Ressource ressource = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44362/api/");
+                var responseTask = client.DeleteAsync($"Ressources/{id}");
+                responseTask.Wait();
 
-        private bool RessourceExists(int id)
-        {
-            return _context.Ressources.Any(e => e.RessourceId == id);
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readJob = result.Content.ReadAsAsync<Ressource>();
+                    readJob.Wait();
+                    ressource = readJob.Result;
+                }
+                else
+                {
+                    //Return the error code here
+                    //customer = EnumerableEmpty<Customer>();
+                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+           
         }
+        //// GET: Ressources/Book/5
+        //public async Task<IActionResult> Book(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    Ressource ressource = null;
+        //    IEnumerable<Department> department = null;
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri("https://localhost:44362/api/");
+        //        var responseTask = client.GetAsync($"Ressources/{id}");
+        //        var responseTask2 = client.GetAsync($"Departments");
+
+        //        responseTask2.Wait();
+
+        //        var result = responseTask.Result;
+        //        var result2 = responseTask2.Result;
+
+        //        if (result.IsSuccessStatusCode)
+        //        {
+        //            var readJob = result.Content.ReadAsAsync<Ressource>();
+        //            readJob.Wait();
+        //            ressource = readJob.Result;
+        //        }
+        //        else
+        //        {
+        //            //Return the error code here
+
+        //            ModelState.AddModelError(string.Empty, "Responsetask 1 fejl rip.");
+        //        }
+        //        if (result2.IsSuccessStatusCode)
+        //        {
+        //            var readJob2 = result2.Content.ReadAsAsync<IList<Department>>();
+        //            readJob2.Wait();
+        //            department = readJob2.Result;
+        //        }
+        //        else
+        //        {
+        //            //Return the error code here
+
+        //            ModelState.AddModelError(string.Empty, "Responsetask 2 fejl rip.");
+        //        }
+
+        //        ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
+
+        //        return View();
+        //    }
+
+        //}
+
+        //private bool RessourceExists(int id)
+        //{
+        //    return _context.Ressources.Any(e => e.RessourceId == id);
+        //}
     }
 }
