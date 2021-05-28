@@ -61,7 +61,7 @@
                     <a asp-action="Delete" asp-route-id="@item.RessourceId">Delete</a>
                 }
                 <a asp-action="Details" asp-route-id="@item.RessourceId">Details</a> |
-                <a asp-action="Details" asp-route-id="@item.RessourceId">BOOK</a> |
+                <a asp-controller="Orders" asp-action="Book" asp-route-id="@item.RessourceId">BOOK</a> |
             </td>
         </tr>
 }

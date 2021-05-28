@@ -167,7 +167,7 @@ namespace Delpin_Booking.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
                 }
-                
+
                 return View(order);
             }
  
@@ -341,12 +341,12 @@ namespace Delpin_Booking.Controllers
                 return NotFound();
             }
             Ressource ressource = null;
-            IEnumerable<Department> department = null;
+            IEnumerable<Customer> customer = null;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://localhost:44362/api/");
                 var responseTask = client.GetAsync($"Ressources/{id}");
-                var responseTask2 = client.GetAsync($"Departments");
+                var responseTask2 = client.GetAsync($"Customers");
 
                 responseTask2.Wait();
 
@@ -367,9 +367,9 @@ namespace Delpin_Booking.Controllers
                 }
                 if (result2.IsSuccessStatusCode)
                 {
-                    var readJob2 = result2.Content.ReadAsAsync<IList<Department>>();
+                    var readJob2 = result2.Content.ReadAsAsync<IList<Customer>>();
                     readJob2.Wait();
-                    department = readJob2.Result;
+                    customer = readJob2.Result;
                 }
                 else
                 {
@@ -377,12 +377,19 @@ namespace Delpin_Booking.Controllers
 
                     ModelState.AddModelError(string.Empty, "Responsetask 2 fejl rip.");
                 }
+                var OrderVM = new Order
+                {
+                    RessourceId = ressource.RessourceId
 
+                };
+
+                //return View(OrderVM);
                 //ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
                 //ViewData["RessourceId"] = new SelectList(ressource, "RessourceId", "RessourceId");
                 //ViewData["test"] = ressource.RessourceId.ToString();
                 //ViewBag.RessourceId = ressource.RessourceId.ToString();
-                return View();
+                ViewData["CustomerId"] = new SelectList(customer, "CustomerId", "CustomerId");
+                return View(OrderVM);
             }
 
         }
