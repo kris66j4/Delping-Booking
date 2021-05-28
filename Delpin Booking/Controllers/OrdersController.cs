@@ -18,7 +18,7 @@ namespace Delpin_Booking.Controllers
         
 
         // GET: Orders
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string customerId)
         {
             IEnumerable<Order> order = null;
             using (var client = new HttpClient())
@@ -40,7 +40,28 @@ namespace Delpin_Booking.Controllers
                     order = Enumerable.Empty<Order>();
                     ModelState.AddModelError(string.Empty, "Server fejl rip.");
                 }
-                return View(order);
+                IQueryable<int> cIdQuery = (IQueryable<int>)(from c in order
+                                                orderby c.CustomerId
+                                             select c.CustomerId);
+
+                //if (!string.IsNullOrEmpty(searchString))
+                //{
+                //    movies = movies.Where(s => s.Title.Contains(searchString));
+                //}
+
+                //if (!string.IsNullOrEmpty(movieGenre))
+                //{
+                //    movies = movies.Where(x => x.Genre == movieGenre);
+                //}
+
+                var OrderVM = new OrderViewModel
+                {
+                    CustomerIds = new SelectList(await cIdQuery.Distinct().ToListAsync()),
+                    Orders = (List<Order>)order
+                };
+
+                return View(OrderVM);
+                //return View(order);
 
             }
         }
