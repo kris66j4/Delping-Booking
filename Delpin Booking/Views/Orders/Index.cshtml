@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Delpin_Booking.Models.OrderViewModel>
+﻿@model IEnumerable<Delpin_Booking.Models.Order>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-controller="Orders" asp-action="Index" method="get">
+@*<form asp-controller="Orders" asp-action="Index" method="get">
     <p>
         <select asp-for="CustomerIds" asp-items="Model.CustomerIds">
             <option value="">All</option>
@@ -18,7 +18,7 @@
         Title: <input type="text" name="SearchString" />
         <input type="submit" value="Search" />
     </p>
-</form>
+</form>*@
 <table class="table">
     <thead>
         <tr>
