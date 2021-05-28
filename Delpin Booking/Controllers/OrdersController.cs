@@ -379,8 +379,8 @@ namespace Delpin_Booking.Controllers
                 }
                 var OrderVM = new Order
                 {
-                    RessourceId = ressource.RessourceId
-
+                    RessourceId = ressource.RessourceId,
+                    Price = ressource.Price
                 };
 
                 //return View(OrderVM);
