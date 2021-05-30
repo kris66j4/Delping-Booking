@@ -3,8 +3,9 @@
 @{
     ViewData["Title"] = "Create";
 }
-
-<h1>Create</h1>
+@if (User.IsInRole("Admin"))
+{
+    <h1>Create</h1>
 
 <h4>Order</h4>
 <hr />
@@ -53,3 +54,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+        }

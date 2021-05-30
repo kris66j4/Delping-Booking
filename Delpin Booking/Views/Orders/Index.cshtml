@@ -4,11 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Order Index</h1>
+<h1>Orders</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
 @*<form asp-controller="Orders" asp-action="Index" method="get">
     <p>
         <select asp-for="CustomerIds" asp-items="Model.CustomerIds">
@@ -52,7 +52,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            @if (User.Identity.Name == "admin@mail.com")
+            @if (User.IsInRole("Admin"))
             {
                 <td>
                     @Html.DisplayFor(modelItem => item.OrderId)
@@ -77,10 +77,18 @@
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    
-                    <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
+                    }
+
+                    | <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                    }
+
                 </td>
             </tr>
 }
