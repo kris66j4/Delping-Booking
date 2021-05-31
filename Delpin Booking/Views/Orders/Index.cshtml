@@ -7,27 +7,29 @@
 <h1>Orders</h1>
 
 @*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
+        <a asp-action="Create">Create New</a>
+    </p>*@
 @*<form asp-controller="Orders" asp-action="Index" method="get">
-    <p>
-        <select asp-for="CustomerIds" asp-items="Model.CustomerIds">
-            <option value="">All</option>
-        </select>
+        <p>
+            <select asp-for="CustomerIds" asp-items="Model.CustomerIds">
+                <option value="">All</option>
+            </select>
 
-        Title: <input type="text" name="SearchString" />
-        <input type="submit" value="Search" />
-    </p>
-</form>*@
-<table class="table">
-    <thead>
-        <tr>
-            @if (User.Identity.Name == "admin@mail.com")
-            {
+            Title: <input type="text" name="SearchString" />
+            <input type="submit" value="Search" />
+        </p>
+    </form>*@
+@if ((User.IsInRole("Admin") || (User.IsInRole("Medarbejder"))))
+{
+    <table class="table">
+        <thead>
+            <tr>
+
+
                 <th>
                     @Html.DisplayNameFor(model => model.OrderId)
                 </th>
-            }
+
                 <th>
                     @Html.DisplayNameFor(model => model.CustomerId)
                 </th>
@@ -46,51 +48,58 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Price)
                 </th>
-                <th></th>
+
             </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            @if (User.IsInRole("Admin"))
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.OrderId)
-                </td>
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderId)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RessourceId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BookingStart)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BookingEnd)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+
+                    <td>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
+                        }
+
+                        | <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                        }
+
+                    </td>
+                </tr>
             }
-                <td>
-                    @Html.DisplayFor(modelItem => item.CustomerId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RessourceId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BookingStart)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BookingEnd)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
-                    }
-
-                    | <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-                    }
-
-                </td>
-            </tr>
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else
+{
+<strong>Du er ikke logget ind som medarbejder eller admin så har derfor ikke adgang til liste over ordre.</strong>
+}
