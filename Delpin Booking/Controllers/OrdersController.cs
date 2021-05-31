@@ -150,7 +150,7 @@ namespace Delpin_Booking.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,CustomerId,RessourceId,Date,BookingStart,BookingEnd,Price")] Order order)
+        public async Task<IActionResult> Create([Bind("OrderId,CustomerId,RessourceId,Date,BookingStart,BookingEnd,DeliveryLocation,Price")] Order order)
         {
             using (var client = new HttpClient())
             {
@@ -241,7 +241,7 @@ namespace Delpin_Booking.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,CustomerId,BookingStart,BookingEnd,RessourceId,Date,Price")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,CustomerId,BookingStart,BookingEnd,RessourceId,Date,DeliveryLocation,Price")] Order order)
         {
             if (id != order.OrderId)
             {

@@ -46,6 +46,9 @@
                     @Html.DisplayNameFor(model => model.Date)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.DeliveryLocation)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Price)
                 </th>
 
@@ -55,46 +58,49 @@
 
             @foreach (var item in Model)
             {
-                <tr>
+            <tr>
 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.OrderId)
-                    </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderId)
+                </td>
 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CustomerId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RessourceId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BookingStart)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BookingEnd)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price)
-                    </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RessourceId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingStart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingEnd)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeliveryLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
 
-                    <td>
+                <td>
 
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
-                        }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
+                    }
 
-                        | <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-                        }
+                    | <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                    }
 
-                    </td>
-                </tr>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
