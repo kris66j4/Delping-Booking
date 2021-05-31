@@ -4,8 +4,8 @@
     ViewData["Title"] = "Book";
 }
 
-@if (User.IsInRole("Admin"))
-{
+
+
     <h1>Book</h1>
 
 <h4>Order</h4>
@@ -61,4 +61,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-        }
+        

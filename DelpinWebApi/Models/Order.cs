@@ -25,6 +25,7 @@ namespace DelpinWebApi.Models
         public DateTime BookingStart { get; set; }
         [Column(TypeName = "Date")]
         public DateTime BookingEnd { get; set; }
+        public string DeliveryLocation { get; set; }
         public decimal Price { get; set; }
     }
 }
