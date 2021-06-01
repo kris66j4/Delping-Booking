@@ -28,17 +28,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="@DateTime.Today" class="form-control"readonly="readonly" />
+                <input asp-for="Date" class="form-control" value="@DateTime.Today"/>
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BookingStart" class="control-label"></label>
-                <input asp-for="@DateTime.Today" class="form-control" />
+                <input asp-for="BookingStart" class="form-control" value="@DateTime.Today"/>
                 <span asp-validation-for="BookingStart" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BookingEnd" class="control-label"></label>
-                <input asp-for="@DateTime.Today" class="form-control" />
+                <input asp-for="BookingEnd" class="form-control" value="@DateTime.Today"/>
                 <span asp-validation-for="BookingEnd" class="text-danger"></span>
             </div>
             <div class="form-group">

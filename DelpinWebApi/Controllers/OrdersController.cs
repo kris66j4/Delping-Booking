@@ -115,13 +115,13 @@ namespace DelpinWebApi.Controllers
         {
             List<Order> ressourceOrders = GetAllOrdersForRessource(newOrder.RessourceId);
 
-            if (ressourceOrders != null)
+            if (ressourceOrders.Count != 0)
             {
                 foreach (Order order in ressourceOrders)
                 {
                     // Ikke sammenligne med alle ordre der er i fortiden < DateTime.Now
 
-                    if (order.BookingEnd!< newOrder.Date)
+                    if (order.BookingEnd !> newOrder.Date)
                     {
 
 
@@ -131,7 +131,7 @@ namespace DelpinWebApi.Controllers
                             // Hvis vi rammer her så ved vi at newOrder start og slut ikke overlapper med ordrens dates.
                             // Herefter skal vi tjekke om datoerne er på samme side af ordren.
 
-                            if ((newOrder.BookingStart < order.BookingStart && newOrder.BookingEnd < order.BookingStart) || (newOrder.BookingStart < order.BookingEnd && newOrder.BookingEnd > order.BookingEnd))
+                            if ((newOrder.BookingStart < order.BookingStart && newOrder.BookingEnd < order.BookingStart) || (newOrder.BookingStart > order.BookingEnd && newOrder.BookingEnd > order.BookingEnd))
                                 //(((newOrder.BookingStart && newOrder.BookingEnd) < order.BookingStart) || (newOrder.BookingStart && newOrder.BookingEnd) > order.BookingEnd)
                                 {
                                 // Hvis vi er her så er den en gyldig reservation. 8==> - - - (.)(.)
