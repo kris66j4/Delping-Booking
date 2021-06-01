@@ -77,17 +77,14 @@ namespace DelpinWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            if (order.BookingStart.CompareTo(order.BookingEnd) > 0)
+            if (CheckDate(order) == true)
             {
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
             }
-            else
-            {
-                return NoContent();
-            }
+            else return NotFound();
             //_context.Orders.Add(order);
             //await _context.SaveChangesAsync();
 
@@ -114,37 +111,79 @@ namespace DelpinWebApi.Controllers
         {
             return _context.Orders.Any(e => e.OrderId == id);
         }
-        public bool CheckDate(Order order)
+        public bool CheckDate(Order newOrder)
         {
+            List<Order> ressourceOrders = GetAllOrdersForRessource(newOrder.RessourceId);
 
-            if (CompareRessourceIdToAllOrders(order.RessourceId))
+            if (ressourceOrders != null)
             {
-                
-                List<Order> ordreListe = _context.Orders.ToList();
-                order.BookingStart.CompareTo(ordreListe[ReturnOrderId()].);
-                //int id = ReturnOrderId(order.OrderId);
+                foreach (Order order in ressourceOrders)
+                {
+                    // Ikke sammenligne med alle ordre der er i fortiden < DateTime.Now
+
+                    if (order.BookingEnd!< newOrder.Date)
+                    {
+
+
+
+                        if (!InRange(newOrder.BookingStart, order.BookingStart, order.BookingEnd) && !InRange(newOrder.BookingEnd, order.BookingStart, order.BookingEnd))
+                        {
+                            // Hvis vi rammer her så ved vi at newOrder start og slut ikke overlapper med ordrens dates.
+                            // Herefter skal vi tjekke om datoerne er på samme side af ordren.
+
+                            if ((newOrder.BookingStart < order.BookingStart && newOrder.BookingEnd < order.BookingStart) || (newOrder.BookingStart < order.BookingEnd && newOrder.BookingEnd > order.BookingEnd))
+                                //(((newOrder.BookingStart && newOrder.BookingEnd) < order.BookingStart) || (newOrder.BookingStart && newOrder.BookingEnd) > order.BookingEnd)
+                                {
+                                // Hvis vi er her så er den en gyldig reservation. 8==> - - - (.)(.)
+                                return true;
+                            }
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                // Denne ressource har ingen ordre.
+                // Datoerne er gyldige
                 return true;
             }
-            
-           
-        }
-        public bool CompareRessourceIdToAllOrders(int ressourceId)
-        {
-            
-            List<Order> ordreListe = _context.Orders.ToList();
-            for (int i = 0; i < ordreListe.Count; i++)
-            {
-                if (ressourceId == ordreListe[i].RessourceId)
-                {
-                    ReturnOrderId(ordreListe[i].OrderId);
-                    return true;
-                   
-                }
-                
-            }
             return false;
-           
+
         }
+
+        
+
+
+        public bool InRange(DateTime dateToCheck, DateTime startDate, DateTime endDate)
+        {
+            return dateToCheck >= startDate && dateToCheck < endDate;
+        }
+
+
+        public List<Order> GetAllOrdersForRessource(int ressourceId)
+        {
+            return _context.Orders.Where(o => o.RessourceId == ressourceId).ToList();
+        }
+
+
+        //public bool CompareRessourceIdToAllOrders(int ressourceId)
+        //{
+
+        //    List<Order> ordreListe = _context.Orders.ToList();
+        //    for (int i = 0; i < ordreListe.Count; i++)
+        //    {
+        //        if (ressourceId == ordreListe[i].RessourceId)
+        //        {
+        //            ReturnOrderId(ordreListe[i].OrderId);
+        //            return true;
+
+        //        }
+
+        //    }
+        //    return false;
+
+        //}
         public int ReturnOrderId(int ordreId)
         {
             int eksisterendeOrdre = ordreId;
