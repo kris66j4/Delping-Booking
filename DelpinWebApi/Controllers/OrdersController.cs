@@ -77,10 +77,21 @@ namespace DelpinWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            if (order.BookingStart.CompareTo(order.BookingEnd) > 0)
+            {
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
+                return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
+            }
+            else
+            {
+                return NoContent();
+            }
+            //_context.Orders.Add(order);
+            //await _context.SaveChangesAsync();
+
+            //return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
         }
 
         // DELETE: api/Orders/5
@@ -102,6 +113,42 @@ namespace DelpinWebApi.Controllers
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.OrderId == id);
+        }
+        public bool CheckDate(Order order)
+        {
+
+            if (CompareRessourceIdToAllOrders(order.RessourceId))
+            {
+                
+                List<Order> ordreListe = _context.Orders.ToList();
+                order.BookingStart.CompareTo(ordreListe[ReturnOrderId()].);
+                //int id = ReturnOrderId(order.OrderId);
+                return true;
+            }
+            
+           
+        }
+        public bool CompareRessourceIdToAllOrders(int ressourceId)
+        {
+            
+            List<Order> ordreListe = _context.Orders.ToList();
+            for (int i = 0; i < ordreListe.Count; i++)
+            {
+                if (ressourceId == ordreListe[i].RessourceId)
+                {
+                    ReturnOrderId(ordreListe[i].OrderId);
+                    return true;
+                   
+                }
+                
+            }
+            return false;
+           
+        }
+        public int ReturnOrderId(int ordreId)
+        {
+            int eksisterendeOrdre = ordreId;
+            return eksisterendeOrdre;
         }
     }
 }
