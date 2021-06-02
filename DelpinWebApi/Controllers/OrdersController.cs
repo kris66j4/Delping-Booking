@@ -13,11 +13,15 @@ namespace DelpinWebApi.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly TodoContext _context;
+        public readonly TodoContext _context;
 
         public OrdersController(TodoContext context)
         {
             _context = context;
+        }
+
+        public OrdersController()
+        {
         }
 
         // GET: api/Orders
@@ -121,7 +125,7 @@ namespace DelpinWebApi.Controllers
                 {
                     // Ikke sammenligne med alle ordre der er i fortiden < DateTime.Now
 
-                    if (order.BookingEnd !> newOrder.Date)
+                    if (order.BookingEnd !< newOrder.Date)
                     {
 
 
