@@ -20,9 +20,6 @@ namespace DelpinWebApi.Controllers
             _context = context;
         }
 
-        public OrdersController()
-        {
-        }
 
         // GET: api/Orders
         [HttpGet]
@@ -35,6 +32,10 @@ namespace DelpinWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
+
+
+
+
             var order = await _context.Orders.FindAsync(id);
 
             if (order == null)
@@ -81,7 +82,7 @@ namespace DelpinWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-            if (CheckDate(order) == true)
+            if (CheckDate(order))
             {
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
@@ -125,7 +126,7 @@ namespace DelpinWebApi.Controllers
                 {
                     // Ikke sammenligne med alle ordre der er i fortiden < DateTime.Now
 
-                    if (order.BookingEnd !< newOrder.Date)
+                    if ((order.BookingEnd !> newOrder.Date) && (newOrder.BookingStart >= newOrder.Date))
                     {
 
 
@@ -170,24 +171,6 @@ namespace DelpinWebApi.Controllers
             return _context.Orders.Where(o => o.RessourceId == ressourceId).ToList();
         }
 
-
-        //public bool CompareRessourceIdToAllOrders(int ressourceId)
-        //{
-
-        //    List<Order> ordreListe = _context.Orders.ToList();
-        //    for (int i = 0; i < ordreListe.Count; i++)
-        //    {
-        //        if (ressourceId == ordreListe[i].RessourceId)
-        //        {
-        //            ReturnOrderId(ordreListe[i].OrderId);
-        //            return true;
-
-        //        }
-
-        //    }
-        //    return false;
-
-        //}
         public int ReturnOrderId(int ordreId)
         {
             int eksisterendeOrdre = ordreId;
