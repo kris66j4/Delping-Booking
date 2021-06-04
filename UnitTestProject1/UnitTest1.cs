@@ -23,11 +23,7 @@ namespace UnitTestProject1
         [TestCleanup()]
         public void Cleanup()
         {
-
-            // Cleanup Context DB
-            // await context.DisposeAsync();
             context.Database.EnsureDeleted();
-            context.SaveChanges();
         }
 
 
@@ -36,7 +32,6 @@ namespace UnitTestProject1
         [TestMethod]
         public void TestCheckDateExpectedFalse()
         {
-
             //Arrange 
             var oc = new OrdersController(context);
             

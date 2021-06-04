@@ -128,9 +128,6 @@ namespace DelpinWebApi.Controllers
 
                     if ((order.BookingEnd !> newOrder.Date) && (newOrder.BookingStart >= newOrder.Date))
                     {
-
-
-
                         if (!InRange(newOrder.BookingStart, order.BookingStart, order.BookingEnd) && !InRange(newOrder.BookingEnd, order.BookingStart, order.BookingEnd))
                         {
                             // Hvis vi rammer her så ved vi at newOrder start og slut ikke overlapper med ordrens dates.
