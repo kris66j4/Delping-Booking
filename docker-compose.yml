@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  delpinwebapi:
+    image: ${DOCKER_REGISTRY-}delpinwebapi
+    build:
+      context: .
+      dockerfile: DelpinWebApi/Dockerfile
+
+  delpinbooking:
+    image: ${DOCKER_REGISTRY-}delpinbooking
+    build:
+      context: .
+      dockerfile: Delpin Booking/Dockerfile
+
