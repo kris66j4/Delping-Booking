@@ -32,7 +32,7 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
                     customer = Enumerable.Empty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(customer);
             }
@@ -61,8 +61,8 @@ namespace Delpin_Booking.Controllers
                 else
                 {
                     //Return the error code here
-                    //customer = EnumerableEmpty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(customer);
             }
@@ -92,7 +92,7 @@ namespace Delpin_Booking.Controllers
 
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(customer);
             }
@@ -123,8 +123,8 @@ namespace Delpin_Booking.Controllers
                 else
                 {
                     //Return the error code here
-                    //customer = EnumerableEmpty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                   
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(customer);
             }
@@ -156,7 +156,7 @@ namespace Delpin_Booking.Controllers
 
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(customer);
             }
@@ -186,8 +186,8 @@ namespace Delpin_Booking.Controllers
                 else
                 {
                     //Return the error code here
-                    //customer = EnumerableEmpty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                   
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(customer);
                 
@@ -219,20 +219,14 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
                     //customer = EnumerableEmpty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                
                 return RedirectToAction(nameof(Index));
             }
 
         }
-        //Denne metode blev brugt i forbindelse med original EF MVC genereret kode. 
-        //Den blev muligvis brugt til at checke om customer eksisterer.
-
-        //private bool CustomerExists(int id)
-        //{
-        //    return _context.Customers.Any(e => e.CustomerId == id);
-        //}
+        
     }
 }
 

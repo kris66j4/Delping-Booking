@@ -13,6 +13,7 @@ namespace Delpin_Booking.Controllers
 {
     public class DepartmentsController : Controller
     {
+        //LEGACY CLASS. NOT USED FOR ANYTHING OTHER THAN TESTING
         private readonly DelpinBookingContext _context;
 
         public DepartmentsController(DelpinBookingContext context)

@@ -27,7 +27,9 @@ namespace Delpin_Booking.Models
         public string DeliveryLocation { get; set; }
 
         public decimal Price { get; set; }
+        [Timestamp]
+        public byte[] Timestamp { get; set; }
 
-        
+
     }
 }

@@ -37,7 +37,7 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
                     ressource = Enumerable.Empty<Ressource>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
             }   return View(ressource);
             
@@ -68,7 +68,7 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
                     
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(ressource);
             }
@@ -95,7 +95,7 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
                     
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId");
                 return View();
@@ -122,7 +122,7 @@ namespace Delpin_Booking.Controllers
 
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(ressource);
             }
@@ -159,7 +159,7 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
 
-                    ModelState.AddModelError(string.Empty, "Responsetask 1 fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 if (result2.IsSuccessStatusCode)
                 {
@@ -171,7 +171,7 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
 
-                    ModelState.AddModelError(string.Empty, "Responsetask 2 fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                
                 ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
@@ -205,7 +205,7 @@ namespace Delpin_Booking.Controllers
 
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "yo recked its crashed fool");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
                 return View(ressource);
@@ -237,8 +237,8 @@ namespace Delpin_Booking.Controllers
                 else
                 {
                     //Return the error code here
-                    //customer = EnumerableEmpty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                   
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
                 return View(ressource);
 
@@ -269,68 +269,13 @@ namespace Delpin_Booking.Controllers
                 {
                     //Return the error code here
                     //customer = EnumerableEmpty<Customer>();
-                    ModelState.AddModelError(string.Empty, "Server fejl rip.");
+                    ModelState.AddModelError(string.Empty, "Something went wrong server side. Contact Admin");
                 }
 
                 return RedirectToAction(nameof(Index));
             }
            
         }
-        //// GET: Ressources/Book/5
-        //public async Task<IActionResult> Book(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    Ressource ressource = null;
-        //    IEnumerable<Department> department = null;
-        //    using (var client = new HttpClient())
-        //    {
-        //        client.BaseAddress = new Uri("https://localhost:44362/api/");
-        //        var responseTask = client.GetAsync($"Ressources/{id}");
-        //        var responseTask2 = client.GetAsync($"Departments");
-
-        //        responseTask2.Wait();
-
-        //        var result = responseTask.Result;
-        //        var result2 = responseTask2.Result;
-
-        //        if (result.IsSuccessStatusCode)
-        //        {
-        //            var readJob = result.Content.ReadAsAsync<Ressource>();
-        //            readJob.Wait();
-        //            ressource = readJob.Result;
-        //        }
-        //        else
-        //        {
-        //            //Return the error code here
-
-        //            ModelState.AddModelError(string.Empty, "Responsetask 1 fejl rip.");
-        //        }
-        //        if (result2.IsSuccessStatusCode)
-        //        {
-        //            var readJob2 = result2.Content.ReadAsAsync<IList<Department>>();
-        //            readJob2.Wait();
-        //            department = readJob2.Result;
-        //        }
-        //        else
-        //        {
-        //            //Return the error code here
-
-        //            ModelState.AddModelError(string.Empty, "Responsetask 2 fejl rip.");
-        //        }
-
-        //        ViewData["DepartmentId"] = new SelectList(department, "DepartmentId", "DepartmentId", ressource.DepartmentId);
-
-        //        return View();
-        //    }
-
-        //}
-
-        //private bool RessourceExists(int id)
-        //{
-        //    return _context.Ressources.Any(e => e.RessourceId == id);
-        //}
+       
     }
 }

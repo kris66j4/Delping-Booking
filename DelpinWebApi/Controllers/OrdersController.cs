@@ -32,10 +32,6 @@ namespace DelpinWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-
-
-
-
             var order = await _context.Orders.FindAsync(id);
 
             if (order == null)
@@ -90,10 +86,7 @@ namespace DelpinWebApi.Controllers
                 return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
             }
             else return NotFound();
-            //_context.Orders.Add(order);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
+           
         }
 
         // DELETE: api/Orders/5
@@ -122,11 +115,13 @@ namespace DelpinWebApi.Controllers
 
             if (ressourceOrders.Count != 0)
             {
+
+                bool canCreateOrder = true;
                 foreach (Order order in ressourceOrders)
                 {
                     // Ikke sammenligne med alle ordre der er i fortiden < DateTime.Now
 
-                    if ((order.BookingEnd !> newOrder.Date) && (newOrder.BookingStart >= newOrder.Date))
+                    if ((order.BookingEnd! > newOrder.Date) && (newOrder.BookingStart >= newOrder.Date))
                     {
                         if (!InRange(newOrder.BookingStart, order.BookingStart, order.BookingEnd) && !InRange(newOrder.BookingEnd, order.BookingStart, order.BookingEnd))
                         {
@@ -134,15 +129,30 @@ namespace DelpinWebApi.Controllers
                             // Herefter skal vi tjekke om datoerne er på samme side af ordren.
 
                             if ((newOrder.BookingStart < order.BookingStart && newOrder.BookingEnd < order.BookingStart) || (newOrder.BookingStart > order.BookingEnd && newOrder.BookingEnd > order.BookingEnd))
-                                //(((newOrder.BookingStart && newOrder.BookingEnd) < order.BookingStart) || (newOrder.BookingStart && newOrder.BookingEnd) > order.BookingEnd)
-                                {
-                                // Hvis vi er her så er den en gyldig reservation. 8==> - - - (.)(.)
-                                return true;
+                            {
+                                // Hvis vi er her så er den en gyldig reservation. 
+                                
+
+                            }
+                            else
+                            {
+                                canCreateOrder = false;
                             }
                         }
+                        else
+                        {
+                            canCreateOrder = false;
+                        }
+                    }
+                    else
+                    {
+                        canCreateOrder = false;
                     }
 
                 }
+                
+                
+                return canCreateOrder;
             }
             else
             {
@@ -150,12 +160,9 @@ namespace DelpinWebApi.Controllers
                 // Datoerne er gyldige
                 return true;
             }
-            return false;
+            
 
-        }
-
-        
-
+        }   
 
         public bool InRange(DateTime dateToCheck, DateTime startDate, DateTime endDate)
         {
